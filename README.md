@@ -72,6 +72,6 @@ The application will start in debug mode and be accessible at `http://127.0.0.1:
 - This project saves passwords in plain text for demonstration purposes only. For production use, always hash passwords before storing them.
 - Ensure your MongoDB URI is kept secure and not exposed publicly.
 
-## License
+## Demo 
 
-This project is provided as-is without any warranty.
+Demo - 
