@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: flask-login-app
+    env: python
+    buildCommand: ""
+    startCommand: python app.py
+    envVars:
+      - key: MONGO_URI
+        value: "mongodb+srv://flask-form:flask-form@form-practice.gyvoj.mongodb.net/?retryWrites=true&w=majority&appName=form-practice"
