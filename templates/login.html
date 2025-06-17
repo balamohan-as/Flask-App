@@ -159,7 +159,7 @@
         </form>
     </div>
 
-    <script>
+     <script>
         let isPasswordVisible = false;
 
         function togglePassword() {
@@ -197,8 +197,12 @@
             .then(res => res.json())
             .then(data => {
                 alert(data.message);
-                btn.textContent = 'Log In';
-                btn.disabled = false;
+                if (data.redirect) {
+                    window.location.href = data.redirect; // 👈 redirect to /dashboard
+                } else {
+                    btn.textContent = 'Log In';
+                    btn.disabled = false;
+                }
             })
             .catch(err => {
                 alert("Error submitting form.");
