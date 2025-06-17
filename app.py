@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for  # added redirect and url_for
 from pymongo import MongoClient
 import os
 
@@ -26,10 +26,13 @@ def login():
         return jsonify({'message': 'Missing email or password'}), 400
 
     users_collection.insert_one({'email': email, 'password': password})
-    return jsonify({'message': 'Login data saved successfully!'}), 200
+    return jsonify({'message': 'Login successful', 'redirect': '/dashboard'}), 200
 
-# Optional: Get all users (for testing)
-@app.route('/users', methods=['GET'])
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')  # make sure dashboard.html is inside templates/
+
+@app.route('/users')
 def get_users():
     all_users = list(users_collection.find({}, {'_id': 0}))
     return jsonify(all_users)
