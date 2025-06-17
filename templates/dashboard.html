@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 1200px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: block;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        .stat {
+            text-align: center;
+            color: #333;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #8e9aaf;
+        }
+        .search-section {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .search-input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(102, 126, 234, 0.3);
+        }
+        .filter-btn:hover::before {
+            left: 100%;
+        }
+        .filter-btn:active {
+            transform: translateY(0);
+        }
+        .books-grid {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        .books-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .books-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .books-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f3f4;
+            vertical-align: middle;
+        }
+        .books-table tr:hover {
+            background: #f8f9fa;
+        }
+        .book-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 2px;
+        }
+        .book-author {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .book-genre {
+            background: #ecf0f1;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #34495e;
+            display: inline-block;
+        }
+        .book-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-available {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+        .status-borrowed {
+            background: #fadbd8;
+            color: #e74c3c;
+        }
+        .book-rating {
+            color: #f39c12;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .book-year {
+            color: #95a5a6;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .filters {
+                justify-content: center;
+            }
+            .books-table {
+                font-size: 14px;
+            }
+            .books-table th,
+            .books-table td {
+                padding: 10px 8px;
+            }
+            .books-table th:nth-child(3),
+            .books-table td:nth-child(3) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Library Dashboard</h1>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Total Books</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Available</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Borrowed</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <input type="text" class="search-input" placeholder="Search books..." id="searchInput">
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterBooks('all')">All</button>
+            <button class="filter-btn" onclick="filterBooks('available')">Available</button>
+            <button class="filter-btn" onclick="filterBooks('borrowed')">Borrowed</button>
+            <button class="filter-btn" onclick="filterBooks('fiction')">Fiction</button>
+            <button class="filter-btn" onclick="filterBooks('non-fiction')">Non-Fiction</button>
+        </div>
+
+        <div class="books-grid" id="booksGrid">
+            <table class="books-table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Genre</th>
+                        <th>Year</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="booksTableBody">
+                    <!-- Books will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const books = [
+            { id: 1, title: "The Great Gatsby", author: "F. Scott Fitzgerald", genre: "Fiction", year: 1925, rating: 4.2, status: "available", description: "A novel about the American dream and the roaring twenties." },
+            { id: 2, title: "To Kill a Mockingbird", author: "Harper Lee", genre: "Fiction", year: 1960, rating: 4.5, status: "borrowed", description: "A story of racial injustice and childhood innocence in the Deep South." },
+            { id: 3, title: "1984", author: "George Orwell", genre: "Fiction", year: 1949, rating: 4.4, status: "available", description: "A dystopian novel about totalitarianism and surveillance." },
+            { id: 4, title: "Pride and Prejudice", author: "Jane Austen", genre: "Fiction", year: 1813, rating: 4.3, status: "available", description: "A classic romance novel exploring manners and marriage." },
+            { id: 5, title: "The Catcher in the Rye", author: "J.D. Salinger", genre: "Fiction", year: 1951, rating: 3.8, status: "borrowed", description: "A story about teenage rebellion and alienation." },
+            { id: 6, title: "Harry Potter", author: "J.K. Rowling", genre: "Fantasy", year: 1997, rating: 4.7, status: "available", description: "A young wizard's journey through a magical school." },
+            { id: 7, title: "The Lord of the Rings", author: "J.R.R. Tolkien", genre: "Fantasy", year: 1954, rating: 4.6, status: "available", description: "An epic fantasy adventure to destroy a powerful ring." },
+            { id: 8, title: "Sherlock Holmes", author: "Arthur Conan Doyle", genre: "Mystery", year: 1887, rating: 4.4, status: "borrowed", description: "Detective stories featuring the famous Sherlock Holmes." },
+            { id: 9, title: "The Hobbit", author: "J.R.R. Tolkien", genre: "Fantasy", year: 1937, rating: 4.5, status: "available", description: "A hobbit's adventure to reclaim a lost kingdom." },
+            { id: 10, title: "Sapiens", author: "Yuval Noah Harari", genre: "Non-Fiction", year: 2011, rating: 4.4, status: "available", description: "A brief history of humankind." },
+            { id: 11, title: "The Da Vinci Code", author: "Dan Brown", genre: "Mystery", year: 2003, rating: 4.1, status: "borrowed", description: "A mystery thriller involving secret societies." },
+            { id: 12, title: "Educated", author: "Tara Westover", genre: "Non-Fiction", year: 2018, rating: 4.3, status: "available", description: "A memoir about growing up in a strict and abusive household." }
+        ];
+
+        function createBookRow(book) {
+            return `
+                <tr class="book-row" data-book-id="${book.id}">
+                    <td>
+                        <div class="book-title">${book.title}</div>
+                        <div class="book-author">by ${book.author}</div>
+                    </td>
+                    <td>
+                        <span class="book-genre">${book.genre}</span>
+                    </td>
+                    <td>
+                        <span class="book-year">${book.year}</span>
+                    </td>
+                    <td>
+                        <span class="book-rating">⭐ ${book.rating}</span>
+                    </td>
+                    <td>
+                        <span class="book-status ${book.status === 'available' ? 'status-available' : 'status-borrowed'}">
+                            ${book.status}
+                        </span>
+                    </td>
+                </tr>
+                <tr class="book-description-row" id="desc-${book.id}" style="display:none;">
+                    <td colspan="5" class="book-description-cell">${book.description}</td>
+                </tr>
+            `;
+        }
+
+        function renderBooks(booksToRender = books) {
+            const tableBody = document.getElementById('booksTableBody');
+            tableBody.innerHTML = booksToRender.map(book => createBookRow(book)).join('');
+            addBookRowListeners();
+        }
+
+        function filterBooks(filter) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let filteredBooks = books;
+
+            if (filter === 'available') {
+                filteredBooks = books.filter(book => book.status === 'available');
+            } else if (filter === 'borrowed') {
+                filteredBooks = books.filter(book => book.status === 'borrowed');
+            } else if (filter === 'fiction') {
+                filteredBooks = books.filter(book => book.genre.toLowerCase().includes('fiction'));
+            } else if (filter === 'non-fiction') {
+                filteredBooks = books.filter(book => book.genre.toLowerCase() === 'non-fiction');
+            }
+
+            renderBooks(filteredBooks);
+        }
+        function addBookRowListeners() {
+            document.querySelectorAll('.book-row').forEach(row => {
+                row.addEventListener('click', () => {
+                    const bookId = row.getAttribute('data-book-id');
+                    const descRow = document.getElementById(`desc-${bookId}`);
+                    if (descRow.style.display === 'none') {
+                        descRow.style.display = 'table-row';
+                    } else {
+                        descRow.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredBooks = books.filter(book => 
+                book.title.toLowerCase().includes(searchTerm) ||
+                book.author.toLowerCase().includes(searchTerm) ||
+                book.genre.toLowerCase().includes(searchTerm)
+            );
+            renderBooks(filteredBooks);
+        });
+
+        // Initialize
+        renderBooks();
+    </script>
+</body>
+</html>
